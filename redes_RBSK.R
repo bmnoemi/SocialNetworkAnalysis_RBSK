@@ -35,16 +35,17 @@ attr_nodes #Nodelist
 
 
 ############################################################################## #
-###                 3. GLOBAL & CENTRALITY INDEXES                        ====
+###                 3.   RBSK                                              ====
 ############################################################################## #
 
-#### ---- 3.1 RBSK   ####
 
 ## Import and read the adjacency matrix 
 #Remocion de FUND y PH2-PH5 ##
 tipo_RBSK_adj <- read.csv("./Data/Com_tipo_RBSK.csv", header = TRUE, row.names = 1) 
 ## Crear el objeto de red a partir de la matriz de adyacencia ##
-tipo_RBSK <- graph_from_adjacency_matrix(as.matrix(tipo_RBSK_adj), mode = "directed", diag = FALSE, add.rownames = "name", weighted = TRUE)
+tipo_RBSK <- graph_from_adjacency_matrix(as.matrix(tipo_RBSK_adj), mode = "directed",
+                                         diag = FALSE, add.rownames = "name",       
+                                         weighted = TRUE)
 
 E(tipo_RBSK) # view edges
 V(tipo_RBSK) # view nodes
@@ -61,8 +62,10 @@ V(tipo_RBSK)
 attr_nodes$type
 
 
-##### ---- 3.1.1 Com_tipo_RBSK   #####
 
+# - - - - - - - - - - - - - - - - - - 
+##### ---- 3.1 Com_tipo_RBSK   #####
+# - - - - - - - - - - - - - - - - - - 
 
 ###### ---- Global indexes   ######
 
@@ -80,16 +83,12 @@ max(dist_tipo_RBSK)
 
 transitivity(tipo_RBSK) #coeficiente de agrupamiento
 
-sort(degree(tipo_RBSK_df)) #indice de grado o num de conexiones para c/u de los 35 nodos
+sort(degree(tipo_RBSK_adj)) #indice de grado o num de conexiones para c/u de los 35 nodos
 grado_tipo_RBSK <- degree(tipo_RBSK_adj)
-View(grado_tipo_RBSK)
+#View(grado_tipo_RBSK)
 sort(grado_tipo_RBSK)
 mean(grado_tipo_RBSK)
 hist(grado_tipo_RBSK) #distribución de grado #la mayor parte de los nodos tienen pocas conexiones
-
-modularity_matrix(graph= grado_tipo_RBSK, membership(wtc), weights = NULL,resolution = 1, directed = TRUE) #modularidad 
-
-clique_num(tipo_RBSK)
 
 
 
@@ -104,8 +103,6 @@ write.csv(tipo_RBSK_centrality, "tipo.RBSK_centrality_values.csv")
 
 ###### ---- Plotting the network  ####
 
-
-plot(tipo_RBSK, edge.arrow.size=0.5, vertex.label.cex=0.5)
 
 V(tipo_RBSK)$type <- attr_nodes$type  #Asignar el atributo "tipo" de los nodos al objeto de red
 
@@ -136,136 +133,173 @@ ggraph(tipo_RBSK, layout = 'dendrogram') +
 
 
 
-#### ---- 3.2 PUNTA ALLEN  ####
-
-##### ---- 3.2.1 Com_tipo_PA   ######
-
-tipo_PA_df <- read.csv("Com_tipo_PA.csv", header = TRUE, row.names = 1) 
-tipo_PA_df
+############################################################################## #
+###                 4.   PUNTA ALLEN                                      ====
+############################################################################## #
 
 
-tipo_PA_n <- graph_from_adjacency_matrix(as.matrix(tipo_PA_df), mode = "directed",
+
+# - - - - - - - - - - - - - - - 
+#### ---- 4.1  Com_tipo_PA ####
+# - - - - - - - - - - - - - - - 
+
+tipo_PA_adj <- read.csv("./Data/Com_tipo_PA.csv", header = TRUE, row.names = 1) 
+tipo_PA_adj
+
+tipo_PA <- graph_from_adjacency_matrix(as.matrix(tipo_PA_adj), mode = "directed",
                                          diag = FALSE, add.rownames = "name", 
                                          weighted = TRUE)
-class(tipo_PA_n)
-tipo_PA_n
-#IGRAPH 6115433 DNW- 41 129 -- 
-#+ attr: name (v/c), weight (e/n)
+class(tipo_PA)
+tipo_PA
+#IGRAPH a6efc6f DNW- 41 129 -- 
+#  + attr: name (v/c), weight (e/n)
 
-plot(tipo_PA_n)
+plot(tipo_PA)
 
-E(tipo_PA_n) # view edges
-V(tipo_PA_n) # view nodes
-edge_attr(tipo_PA_n)
+E(tipo_PA) # view edges
+V(tipo_PA) # view nodes
+edge_attr(tipo_PA)
 
 
 ###### ---- Global indexes   ######
 
-vcount(tipo_PA_n) #numero de nodos
-ecount(tipo_PA_n) #numeros de conexiones
-edge_density(graph = tipo_PA_n, loops = FALSE) #Densidad de la red
-ecount(tipo_PA_n) / (vcount(tipo_PA_n)*(vcount(tipo_PA_n)-1)) # num real de conex / max. teorico de conexiones
 
-dist_tipo_PA_n <- distances(graph = tipo_PA_n)
-dist_tipo_PA_n
-mean_distance(graph = tipo_PA_n) #average Path Length
-diameter(graph = tipo_PA_n)
-max(dist_tipo_PA_n)
+vcount(tipo_PA) #numero de nodos
+ecount(tipo_PA) #numeros de conexiones
+edge_density(graph = tipo_PA, loops = FALSE) #Densidad de la red
+ecount(tipo_PA) / (vcount(tipo_PA)*(vcount(tipo_PA)-1)) # num real de conex / max. teorico de conexiones
 
-transitivity(tipo_PA_n) #coeficiente de agrupamiento
+dist_tipo_PA <- distances(graph = tipo_PA) #distancias que hay entre todos los nodos
+#distances() calculates the length of all the shortest paths from or to the vertices in the network.
+dist_tipo_PA
+mean_distance(graph = tipo_PA) #average Path Length
+diameter(graph = tipo_PA)
+max(dist_tipo_PA)
 
-sort(degree(tipo_PA_df)) #indice de grado o num de conexiones para c/u de los 35 nodos
-grado_tipo_PA_n <- degree(tipo_PA_df)
-sort(grado_tipo_PA_n)
-mean(grado_tipo_PA_n)
-hist(grado_tipo_PA_n) #distribución de grado #la mayor parte de los nodos tienen pocas conexiones
+transitivity(tipo_PA) #coeficiente de agrupamiento
 
-modularity_matrix(graph= grado_tipo_PA_n, membership(wtc), weights = NULL,resolution = 1, directed = TRUE) #modularidad 
+sort(degree(tipo_PA_adj)) #indice de grado o num de conexiones para c/u de los 35 nodos
+grado_tipo_PA <- degree(tipo_PA_adj)
+sort(grado_tipo_PA)
+mean(grado_tipo_PA)
+hist(grado_tipo_PA) #distribución de grado #la mayor parte de los nodos tienen pocas conexiones
 
-clique_num(tipo_PA_n)
 
 
 ###### ---- Centrality indexes   ####
 
-tipo_PA_centrality <- data.frame(Grado = degree(tipo_PA_df), Eigencentralidad = eigen_centrality(tipo_PA_n, directed = FALSE, scale = FALSE)$vector, Cercania = closeness(tipo_PA_df), Intermediacion = betweenness(tipo_PA_df))
+## Colocar en una matriz los valores de Grado, Eigencentralidad, Cercanía e Intermediación.
+tipo_PA_centrality <- data.frame(Grado = degree(tipo_PA_adj), Eigencentralidad = eigen_centrality(tipo_PA, directed = FALSE, scale = FALSE)$vector, Cercania = closeness(tipo_PA_adj), Intermediacion = betweenness(tipo_PA_adj))
 
 write.csv(tipo_PA_centrality, "tipo.PA_centrality_values.csv")
 
 
+
 ###### ---- Plotting the network  ####
 
-ggraph(tipo_PA_n, layout = "fr") + 
+dev.off()
+
+V(tipo_PA)$type <- attr_nodes$type
+
+ggraph(tipo_PA, layout = "fr") + 
   geom_edge_link(color = "grey", alpha = 1) + 
   geom_node_point(aes(color = type), size = 4) +
   scale_color_manual(values = colores) +
   theme_void() +
-  labs(title = "Social Analysis Network in PA")
+  labs(title = "Social Analysis Network in Punta Allen")
 
 
 
-#### ---- 3.3 MARIA ELENA  ####
-
-##### ---- 3.3.1 Com_tipo_CZ   ####
-
-tipo_CZ_df <- read.csv("Com_tipo_CZ.csv", header = TRUE, row.names = 1) 
-tipo_CZ_df
-
-tipo_CZ_n <- graph_from_adjacency_matrix(as.matrix(tipo_CZ_df), mode = "directed",
-                                         diag = FALSE, add.rownames = "name", 
-                                         weighted = TRUE)
-class(tipo_CZ_n)
-tipo_CZ_n
-#IGRAPH bd36c17 DNW- 38 72 -- 
-#+ attr: name (v/c), weight (e/n)
-
-plot(tipo_CZ_n)
-
-E(tipo_CZ_n) # view edges
-V(tipo_CZ_n) # view nodes
-edge_attr(tipo_CZ_n)
 
 
 
-###### ---- Global indexes   ####
+# create management structure as dendrogram (tree)
+set.seed(123)
+ggraph(tipo_PA, layout = 'dendrogram') + 
+  geom_edge_elbow() +
+  geom_node_label(aes(label = name), fill = "lightblue") +
+  theme_void()
 
-vcount(tipo_CZ_n) #numero de nodos
-ecount(tipo_CZ_n) #numeros de conexiones
-edge_density(graph = tipo_CZ_n, loops = FALSE) #Densidad de la red
-ecount(tipo_CZ_n) / (vcount(tipo_CZ_n)*(vcount(tipo_CZ_n)-1)) # num real de conex / max. teorico de conexiones
 
-dist_tipo_CZ_n <- distances(graph = tipo_CZ_n)
-dist_tipo_CZ_n
-mean_distance(graph = tipo_CZ_n) #average Path Length
-diameter(graph = tipo_CZ_n)
-max(dist_tipo_CZ_n)
 
-transitivity(tipo_CZ_n) #coeficiente de agrupamiento
+############################################################################## #
+###                 5.   MARIA ELENA                                      ====
+############################################################################## #
 
-sort(degree(tipo_CZ_df)) #indice de grado o num de conexiones para c/u de los 35 nodos
-grado_tipo_CZ_n <- degree(tipo_CZ_df)
-sort(grado_tipo_CZ_n)
-mean(grado_tipo_CZ_n)
-hist(grado_tipo_CZ_n) #distribución de grado #la mayor parte de los nodos tienen pocas conexiones
 
-modularity_matrix(graph= grado_tipo_CZ_n, membership(wtc), weights = NULL,resolution = 1, directed = TRUE) #modularidad 
+# - - - - - - - - - - - - - - - 
+#### ---- 5.1  Com_tipo_ME ####
+# - - - - - - - - - - - - - - - 
 
-clique_num(tipo_CZ_n)
+tipo_ME_adj <- read.csv("./Data/Com_tipo_CZ.csv", header = TRUE, row.names = 1) 
+tipo_ME_adj
+
+
+tipo_ME <- graph_from_adjacency_matrix(as.matrix(tipo_ME_adj), mode = "directed",
+                                       diag = FALSE, add.rownames = "name", 
+                                       weighted = TRUE)
+class(tipo_ME)
+tipo_ME
+#IGRAPH a6efc6f DNW- 41 129 -- 
+#  + attr: name (v/c), weight (e/n)
+
+plot(tipo_ME)
+
+E(tipo_ME) # view edges
+V(tipo_ME) # view nodes
+edge_attr(tipo_ME)
+
+
+
+###### ---- Global indexes   ######
+
+
+vcount(tipo_ME) #numero de nodos
+ecount(tipo_ME) #numeros de conexiones
+edge_density(graph = tipo_ME, loops = FALSE) #Densidad de la red
+ecount(tipo_ME) / (vcount(tipo_ME)*(vcount(tipo_ME)-1)) # num real de conex / max. teorico de conexiones
+
+dist_tipo_ME <- distances(graph = tipo_ME) #distancias que hay entre todos los nodos
+#distances() calculates the length of all the shortest paths from or to the vertices in the network.
+dist_tipo_ME
+mean_distance(graph = tipo_ME) #average Path Length
+diameter(graph = tipo_ME)
+max(dist_tipo_ME)
+
+transitivity(tipo_ME) #coeficiente de agrupamiento
+
+sort(degree(tipo_ME_adj)) #indice de grado o num de conexiones para c/u de los 35 nodos
+grado_tipo_ME <- degree(tipo_ME_adj)
+View(grado_tipo_ME)
+sort(grado_tipo_ME)
+mean(grado_tipo_ME)
+hist(grado_tipo_ME) #distribución de grado #la mayor parte de los nodos tienen pocas conexiones
+
 
 
 ###### ---- Centrality indexes   ####
 
-tipo_CZ_centrality <- data.frame(Grado = degree(tipo_CZ_df), Eigencentralidad = eigen_centrality(tipo_CZ_n, directed = FALSE, scale = FALSE)$vector, Cercania = closeness(tipo_CZ_df), Intermediacion = betweenness(tipo_CZ_df))
+## Colocar en una matriz los valores de Grado, Eigencentralidad, Cercanía e Intermediación.
+tipo_ME_centrality <- data.frame(Grado = degree(tipo_ME_adj), Eigencentralidad = eigen_centrality(tipo_ME, directed = FALSE, scale = FALSE)$vector, Cercania = closeness(tipo_ME_adj), Intermediacion = betweenness(tipo_ME_adj))
 
-write.csv(tipo_CZ_centrality, "tipo.CZ_centrality_values.csv")
+write.csv(tipo_ME_centrality, "tipo.ME_centrality_values.csv")
+
 
 
 ###### ---- Plotting the network  ####
 
-ggraph(tipo_CZ_n, layout = "fr") + 
+
+ggraph(tipo_ME, layout = "fr") + 
   geom_edge_link(color = "grey", alpha = 1) + 
   geom_node_point(aes(color = type), size = 4) +
   scale_color_manual(values = colores) +
   theme_void() +
-  labs(title = "Social Analysis Network in CZ")
+  labs(title = "Social Analysis Network in Maria Elena")
 
 
+# create management structure as dendrogram (tree)
+set.seed(123)
+ggraph(tipo_ME, layout = 'dendrogram') + 
+  geom_edge_elbow() +
+  geom_node_label(aes(label = name), fill = "lightblue") +
+  theme_void()
