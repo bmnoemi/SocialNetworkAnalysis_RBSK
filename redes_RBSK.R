@@ -1,7 +1,7 @@
 
 
 ############################################################################## #
-###                       1. Install Packages                               ====
+###                       1. INSTALL PACKAGES                             ====
 ############################################################################## #
 
 # Packages
@@ -19,7 +19,7 @@ library(ggplot2)
 
 
 ############################################################################## #
-###                       2. Import data                                  ====
+###                       2. IMPORT DATA                                  ====
 ############################################################################## #
 
 #rm(list = ls())  #funciones rm() y ls()
@@ -29,38 +29,22 @@ list.files(pattern = "*.csv")
 
 #### 2.1 Attribute node data  ####
 
-attr_nodes <- read.csv("RBSK_vertices.csv", header = TRUE, row.names = 1)
+attr_nodes <- read.csv("./Data/RBSK_vertices.csv", header = TRUE, row.names = 1)
 attr_nodes #Nodelist
 
 
 
 ############################################################################## #
-###                 3. Global & Centrality indexes                          ====
+###                 3. GLOBAL & CENTRALITY INDEXES                        ====
 ############################################################################## #
-
-
-## Note that actors in the graph are in the same order as actors in the attribut data frame.
-class(tipo_RBSK) # In igraph, networks are objects of class "igraph"
-V(tipo_RBSK)
-attr_nodes$type
-
-V(tipo_RBSK)$type <- attr_nodes$type  #Asignar el atributo "tipo" de los nodos al objeto de red
-
-# Definir los colores para cada tipo de nodo
-colores <- c("OSC" = "blue", "CONANP" = "brown", "CONAPESCA" = "brown", "INAPESCA" = "brown", "SEMAR" = "brown", "CECIMS" = "darkgoldenrod1", "SCPP.CZ" = "bisque", "SCPP.JMA" = "black", "SCPP.VCH" = "purple", "PA" = "purple", "ME" = "bisque", "ACADEMY" = "cyan", "FUND" = "chartreuse4", "PH" = "coral" ) # Ajusta los colores según tus necesidades
-
-
 
 #### ---- 3.1 RBSK   ####
 
 ## Import and read the adjacency matrix 
 #Remocion de FUND y PH2-PH5 ##
-tipo_RBSK_adj <- read.csv("Com_tipo_RBSK.csv", header = TRUE, row.names = 1) 
-
+tipo_RBSK_adj <- read.csv("./Data/Com_tipo_RBSK.csv", header = TRUE, row.names = 1) 
 ## Crear el objeto de red a partir de la matriz de adyacencia ##
-tipo_RBSK <- graph_from_adjacency_matrix(as.matrix(tipo_RBSK_adj), mode = "directed",
-                                         diag = FALSE, add.rownames = "name", weighted = TRUE)
-
+tipo_RBSK <- graph_from_adjacency_matrix(as.matrix(tipo_RBSK_adj), mode = "directed", diag = FALSE, add.rownames = "name", weighted = TRUE)
 
 E(tipo_RBSK) # view edges
 V(tipo_RBSK) # view nodes
@@ -70,52 +54,64 @@ tipo_RBSK
 #IGRAPH cb28c4d DNW- 55 175 -- 
 # + attr: name (v/c), weight (e/n)
 
-plot(tipo_RBSK, edge.arrow.size=0.5, vertex.label.cex=0.5)
+
+## Note that actors in the graph are in the same order as actors in the attribut data frame.
+class(tipo_RBSK) # In igraph, networks are objects of class "igraph"
+V(tipo_RBSK)
+attr_nodes$type
 
 
+##### ---- 3.1.1 Com_tipo_RBSK   #####
 
-###### ---- 3.1.2 Com_tipo_RBSK   ####
 
+###### ---- Global indexes   ######
 
-##### ---- Global indexes   ####
+vcount(tipo_RBSK) #numero de nodos
+ecount(tipo_RBSK) #numeros de conexiones
+edge_density(graph = tipo_RBSK, loops = FALSE) #Densidad de la red
+ecount(tipo_RBSK) / (vcount(tipo_RBSK)*(vcount(tipo_RBSK)-1)) # num real de conex / max. teorico de conexiones
 
-vcount(tipo_RBSK_n) #numero de nodos
-ecount(tipo_RBSK_n) #numeros de conexiones
-edge_density(graph = tipo_RBSK_n, loops = FALSE) #Densidad de la red
-ecount(tipo_RBSK_n) / (vcount(tipo_RBSK_n)*(vcount(tipo_RBSK_n)-1)) # num real de conex / max. teorico de conexiones
-
-dist_tipo_RBSK_n <- distances(graph = tipo_RBSK_n) #distancias que hay entre todos los nodos
+dist_tipo_RBSK <- distances(graph = tipo_RBSK) #distancias que hay entre todos los nodos
 #distances() calculates the length of all the shortest paths from or to the vertices in the network.
-dist_tipo_RBSK_n
-mean_distance(graph = tipo_RBSK_n) #average Path Length
-diameter(graph = tipo_RBSK_n)
-max(dist_tipo_RBSK_n)
+dist_tipo_RBSK
+mean_distance(graph = tipo_RBSK) #average Path Length
+diameter(graph = tipo_RBSK)
+max(dist_tipo_RBSK)
 
-transitivity(tipo_RBSK_n) #coeficiente de agrupamiento
+transitivity(tipo_RBSK) #coeficiente de agrupamiento
 
 sort(degree(tipo_RBSK_df)) #indice de grado o num de conexiones para c/u de los 35 nodos
-grado_tipo_RBSK_n <- degree(tipo_RBSK_df)
-View(grado_tipo_RBSK_n)
-sort(grado_tipo_RBSK_n)
-mean(grado_tipo_RBSK_n)
-hist(grado_tipo_RBSK_n) #distribución de grado #la mayor parte de los nodos tienen pocas conexiones
+grado_tipo_RBSK <- degree(tipo_RBSK_adj)
+View(grado_tipo_RBSK)
+sort(grado_tipo_RBSK)
+mean(grado_tipo_RBSK)
+hist(grado_tipo_RBSK) #distribución de grado #la mayor parte de los nodos tienen pocas conexiones
 
-modularity_matrix(graph= grado_tipo_RBSK_n, membership(wtc), weights = NULL,resolution = 1, directed = TRUE) #modularidad 
+modularity_matrix(graph= grado_tipo_RBSK, membership(wtc), weights = NULL,resolution = 1, directed = TRUE) #modularidad 
 
-clique_num(tipo_RBSK_n)
+clique_num(tipo_RBSK)
 
 
 
 ###### ---- Centrality indexes   ####
 
 ## Colocar en una matriz los valores de Grado, Eigencentralidad, Cercanía e Intermediación.
-tipo_RBSK_centrality <- data.frame(Grado = degree(tipo_RBSK_df), Eigencentralidad = eigen_centrality(tipo_RBSK_n, directed = FALSE, scale = FALSE)$vector, Cercania = closeness(tipo_RBSK_df), Intermediacion = betweenness(tipo_RBSK_df))
+tipo_RBSK_centrality <- data.frame(Grado = degree(tipo_RBSK_adj), Eigencentralidad = eigen_centrality(tipo_RBSK, directed = FALSE, scale = FALSE)$vector, Cercania = closeness(tipo_RBSK_adj), Intermediacion = betweenness(tipo_RBSK_adj))
 
 write.csv(tipo_RBSK_centrality, "tipo.RBSK_centrality_values.csv")
 
 
 
 ###### ---- Plotting the network  ####
+
+
+plot(tipo_RBSK, edge.arrow.size=0.5, vertex.label.cex=0.5)
+
+V(tipo_RBSK)$type <- attr_nodes$type  #Asignar el atributo "tipo" de los nodos al objeto de red
+
+# Definir los colores para cada tipo de nodo
+colores <- c("OSC" = "blue", "CONANP" = "brown", "CONAPESCA" = "brown", "INAPESCA" = "brown", "SEMAR" = "brown", "CECIMS" = "darkgoldenrod1", "SCPP.CZ" = "bisque", "SCPP.JMA" = "black", "SCPP.VCH" = "purple", "PA" = "purple", "ME" = "bisque", "ACADEMY" = "cyan", "FUND" = "chartreuse4", "PH" = "coral" ) # Ajusta los colores según tus necesidades
+
 
 ggraph(tipo_RBSK, layout = "fr") + 
   geom_edge_link(color = "grey", alpha = 1) + 
@@ -126,19 +122,11 @@ ggraph(tipo_RBSK, layout = "fr") +
 
 # Layouts (diseño de la red) Por default R encuentra el mejor arreglo de manera que los nodos no se sobrepongan. 
 
-set.seed(123)
-ggraph(tipo_RBSK_n, layout = "fr") +
-  geom_edge_link(color = "grey", alpha = 0.8) + 
-  geom_node_point(color = "blue", size = 5) +
-  theme_void() + 
-  labs(title = "Social Analysis Network in RBSK")
-
 # if we want to associate a property of the nodes or edges with a property of the plot, we can use aesthetic mappings.
-
 
 # create management structure as dendrogram (tree)
 set.seed(123)
-ggraph(tipo_RBSK_n, layout = 'dendrogram') + 
+ggraph(tipo_RBSK, layout = 'dendrogram') + 
   geom_edge_elbow() +
   geom_node_label(aes(label = name), fill = "lightblue") +
   theme_void()
@@ -148,10 +136,9 @@ ggraph(tipo_RBSK_n, layout = 'dendrogram') +
 
 
 
-
 #### ---- 3.2 PUNTA ALLEN  ####
 
-###### ---- 3.2.1 Com_tipo_PA   ####
+##### ---- 3.2.1 Com_tipo_PA   ######
 
 tipo_PA_df <- read.csv("Com_tipo_PA.csv", header = TRUE, row.names = 1) 
 tipo_PA_df
@@ -172,7 +159,7 @@ V(tipo_PA_n) # view nodes
 edge_attr(tipo_PA_n)
 
 
-###### ---- Global indexes   ####
+###### ---- Global indexes   ######
 
 vcount(tipo_PA_n) #numero de nodos
 ecount(tipo_PA_n) #numeros de conexiones
@@ -218,7 +205,7 @@ ggraph(tipo_PA_n, layout = "fr") +
 
 #### ---- 3.3 MARIA ELENA  ####
 
-###### ---- 3.3.1 Com_tipo_CZ   ####
+##### ---- 3.3.1 Com_tipo_CZ   ####
 
 tipo_CZ_df <- read.csv("Com_tipo_CZ.csv", header = TRUE, row.names = 1) 
 tipo_CZ_df
