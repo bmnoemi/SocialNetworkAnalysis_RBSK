@@ -29,8 +29,14 @@ list.files(pattern = "*.csv")
 
 #### 2.1 Attribute node data  ####
 
-attr_nodes <- read.csv("./Data/RBSK_vertices.csv", header = TRUE, row.names = 1)
-attr_nodes #Nodelist
+attr_nodes_RBSK <- read.csv("./Data/nodos_RBSK.csv", header = TRUE, row.names = 1)
+attr_nodes_RBSK #Nodelist
+
+attr_nodes_PA <- read.csv("./Data/nodos_PA.csv", header = TRUE, row.names = 1)
+attr_nodes_PA
+
+attr_nodes_ME <- read.csv("./Data/nodos_ME.csv", header = TRUE, row.names = 1)
+attr_nodes_ME
 
 
 
@@ -38,10 +44,11 @@ attr_nodes #Nodelist
 ###                 3.   RBSK                                              ====
 ############################################################################## #
 
+##### ---- Comunicacion_tipo   ######
 
 ## Import and read the adjacency matrix 
 #Remocion de FUND y PH2-PH5 ##
-tipo_RBSK_adj <- read.csv("./Data/Com_tipo_RBSK.csv", header = TRUE, row.names = 1) 
+tipo_RBSK_adj <- read.csv("./Data/Comunicacion_tipo_RBSK.csv", header = TRUE, row.names = 1) 
 ## Crear el objeto de red a partir de la matriz de adyacencia ##
 tipo_RBSK <- graph_from_adjacency_matrix(as.matrix(tipo_RBSK_adj), mode = "directed",
                                          diag = FALSE, add.rownames = "name",       
@@ -62,9 +69,26 @@ V(tipo_RBSK)
 attr_nodes$type
 
 
+##### ---- Comunicacion_frecuencia   ######
+
+
+
+
+##### ---- Colaboracion   ######
+
+
+
+
+
+##### ---- Confianza   ######
+
+
+
+
+
 
 # - - - - - - - - - - - - - - - - - - 
-##### ---- 3.1 Com_tipo_RBSK   #####
+##### ---- 3.1 Comunicacion_tipo   #####
 # - - - - - - - - - - - - - - - - - - 
 
 ###### ---- Global indexes   ######
@@ -104,7 +128,7 @@ write.csv(tipo_RBSK_centrality, "tipo.RBSK_centrality_values.csv")
 ###### ---- Plotting the network  ####
 
 
-V(tipo_RBSK)$type <- attr_nodes$type  #Asignar el atributo "tipo" de los nodos al objeto de red
+V(tipo_RBSK)$type <- attr_nodes_RBSK$type  #Asignar el atributo "tipo" de los nodos al objeto de red
 
 # Definir los colores para cada tipo de nodo
 colores <- c("OSC" = "blue", "CONANP" = "brown", "CONAPESCA" = "brown", "INAPESCA" = "brown", "SEMAR" = "brown", "CECIMS" = "darkgoldenrod1", "SCPP.CZ" = "bisque", "SCPP.JMA" = "black", "SCPP.VCH" = "purple", "PA" = "purple", "ME" = "bisque", "ACADEMY" = "cyan", "FUND" = "chartreuse4", "PH" = "coral" ) # Ajusta los colores según tus necesidades
@@ -128,7 +152,20 @@ ggraph(tipo_RBSK, layout = 'dendrogram') +
   geom_node_label(aes(label = name), fill = "lightblue") +
   theme_void()
 
-#layout_with_mds(r.tipo.RBSK)
+#layout_with_mds(tipo_RBSK)
+
+
+
+
+# - - - - - - - - - - - - - - - - - - 
+##### ---- 3.2 Comunicacion_frecuencia   #####
+# - - - - - - - - - - - - - - - - - - 
+
+
+
+
+
+
 
 
 
@@ -138,12 +175,28 @@ ggraph(tipo_RBSK, layout = 'dendrogram') +
 ############################################################################## #
 
 
+##### ---- Comunicacion_tipo   ######
+
+
+
+##### ---- Comunicacion_frecuencia   ######
+
+
+
+##### ---- Colaboracion   ######
+
+
+
+##### ---- Confianza   ######
+
+
+
 
 # - - - - - - - - - - - - - - - 
-#### ---- 4.1  Com_tipo_PA ####
+#### ---- 4.1  Comunicacion_tipo_PA ####
 # - - - - - - - - - - - - - - - 
 
-tipo_PA_adj <- read.csv("./Data/Com_tipo_PA.csv", header = TRUE, row.names = 1) 
+tipo_PA_adj <- read.csv("./Data/Comunicacion_tipo_PA.csv", header = TRUE, row.names = 1) 
 tipo_PA_adj
 
 tipo_PA <- graph_from_adjacency_matrix(as.matrix(tipo_PA_adj), mode = "directed",
@@ -159,6 +212,7 @@ plot(tipo_PA)
 E(tipo_PA) # view edges
 V(tipo_PA) # view nodes
 edge_attr(tipo_PA)
+
 
 
 ###### ---- Global indexes   ######
@@ -199,7 +253,7 @@ write.csv(tipo_PA_centrality, "tipo.PA_centrality_values.csv")
 
 dev.off()
 
-V(tipo_PA)$type <- attr_nodes$type
+V(tipo_PA)$type <- attr_nodes_PA$type
 
 ggraph(tipo_PA, layout = "fr") + 
   geom_edge_link(color = "grey", alpha = 1) + 
@@ -209,16 +263,25 @@ ggraph(tipo_PA, layout = "fr") +
   labs(title = "Social Analysis Network in Punta Allen")
 
 
-
-
-
-
 # create management structure as dendrogram (tree)
 set.seed(123)
 ggraph(tipo_PA, layout = 'dendrogram') + 
   geom_edge_elbow() +
   geom_node_label(aes(label = name), fill = "lightblue") +
   theme_void()
+
+
+
+
+# - - - - - - - - - - - - - - - - - - 
+##### ---- 4.2 Comunicacion_frecuencia   #####
+# - - - - - - - - - - - - - - - - - - 
+
+
+
+
+
+
 
 
 
@@ -231,7 +294,7 @@ ggraph(tipo_PA, layout = 'dendrogram') +
 #### ---- 5.1  Com_tipo_ME ####
 # - - - - - - - - - - - - - - - 
 
-tipo_ME_adj <- read.csv("./Data/Com_tipo_CZ.csv", header = TRUE, row.names = 1) 
+tipo_ME_adj <- read.csv("./Data/Comunicacion_tipo_ME.csv", header = TRUE, row.names = 1) 
 tipo_ME_adj
 
 
@@ -270,7 +333,6 @@ transitivity(tipo_ME) #coeficiente de agrupamiento
 
 sort(degree(tipo_ME_adj)) #indice de grado o num de conexiones para c/u de los 35 nodos
 grado_tipo_ME <- degree(tipo_ME_adj)
-View(grado_tipo_ME)
 sort(grado_tipo_ME)
 mean(grado_tipo_ME)
 hist(grado_tipo_ME) #distribución de grado #la mayor parte de los nodos tienen pocas conexiones
@@ -288,6 +350,7 @@ write.csv(tipo_ME_centrality, "tipo.ME_centrality_values.csv")
 
 ###### ---- Plotting the network  ####
 
+V(tipo_ME)$type <- attr_nodes_ME$type
 
 ggraph(tipo_ME, layout = "fr") + 
   geom_edge_link(color = "grey", alpha = 1) + 
@@ -303,3 +366,11 @@ ggraph(tipo_ME, layout = 'dendrogram') +
   geom_edge_elbow() +
   geom_node_label(aes(label = name), fill = "lightblue") +
   theme_void()
+
+
+
+# - - - - - - - - - - - - - - - - - - 
+##### ---- 5.2 Comunicacion_frecuencia   #####
+# - - - - - - - - - - - - - - - - - - 
+
+
